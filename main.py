@@ -6,28 +6,28 @@ GPIO.setmode(GPIO.BCM)
 
 GPIO.setup(17,GPIO.IN)
 
-tempoInicio = time.time()
-registrar = False
+t0 = time.time()
+flag = False
 
-def calcularTempo(channel):
+def calcularPeriodo(channel):
 
     GPIO.remove_event_detect(17)
     
-    global tempoInicio
-    global registrar
+    global t0
+    global flag
 
-    if registrar:
-        tempoDecorrido = time.time() - tempoInicio
-        print(f'Intervalo : {tempoDecorrido:.3f}')
-        tempoInicio = time.time()
+    if flag:
+        tempo = time.time() - t0
+        print(f'Intervalo : {tempo:.3f}')
+        t0 = time.time()
 
-        registrar = False
+        flag = False
     else:
-        registrar = True
+        flag = True
 
-    GPIO.add_event_detect(17,GPIO.BOTH,callback = calcularTempo, bouncetime = 10)
+    GPIO.add_event_detect(17,GPIO.BOTH,callback = calcularPeriodo, bouncetime = 10)
    
-GPIO.add_event_detect(17,GPIO.BOTH,callback=calcularTempo,bouncetime=10)
+GPIO.add_event_detect(17,GPIO.BOTH,callback=calcularPeriodo,bouncetime=10)
 
 print('Pressione ctrl+c para sair')
 try:
