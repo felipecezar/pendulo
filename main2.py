@@ -2,12 +2,12 @@ import RPi.GPIO as GPIO
 import time
 import csv
 
+t0 = time.time()
+
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(17,GPIO.IN)
 
-t0 = time.time()
-flag = False
 dados = []
 
 def gravarDados():
@@ -17,18 +17,12 @@ def gravarDados():
             arquivo.writerow([dado])
 
 def calcularPeriodo(channel):
-    GPIO.remove_event_detect(17)  
     global t0
-    global flag
+    GPIO.remove_event_detect(17)  
     global dados
-    if flag:
-        tempo = time.time() - t0
-        dados.append(f'{tempo:.3f}')
-        print(f'Intervalo : {tempo:.3f}')
-        t0 = time.time()
-        flag = False
-    else:
-        flag = True
+    tempo = time.time() - t0
+    dados.append(f'{tempo:.3f}')
+    print(f'{tempo:.3f}')
     GPIO.add_event_detect(17,GPIO.BOTH,callback = calcularPeriodo, bouncetime = 10)
    
 GPIO.add_event_detect(17,GPIO.BOTH,callback=calcularPeriodo,bouncetime=10)
